@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Notepad</string>
+    <string name="edit_message">Enter a message</string>
+    <string name="button_send">Send</string>
+    <string name="new_file_title">New File</string>
+    <string name="new_page">New Page</string>
+    <string name="save_page">Save Page</string>
+    <string name="load_page">Load Page</string>
+    <string name="view_pages">View Pages</string>
+</resources>

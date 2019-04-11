@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/new_page"
+        android:title="@string/new_page" />
+    <item
+        android:id="@+id/save_page"
+        android:title="@string/save_page" />
+    <item
+        android:id="@+id/load_page"
+        android:title="@string/load_page" />
+    <item
+        android:id="@+id/view_pages"
+        android:title="@string/view_pages" />
+</menu>

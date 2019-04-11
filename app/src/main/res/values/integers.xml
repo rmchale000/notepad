@@ -1,0 +1,3 @@
+<resources>
+    <integer name="edittext_maxlength">2000</integer>
+</resources>
