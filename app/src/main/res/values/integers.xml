@@ -1,3 +1,4 @@
 <resources>
     <integer name="edittext_maxlength">2000</integer>
+    <integer name="filename_maxlength">18</integer>
 </resources>

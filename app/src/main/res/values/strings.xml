@@ -7,4 +7,7 @@
     <string name="save_page">Save Page</string>
     <string name="load_page">Load Page</string>
     <string name="view_pages">View Pages</string>
+    <string name="dialog_filename">File Name</string>
+    <string name="save">Save</string>
+    <string name="back">Back</string>
 </resources>
