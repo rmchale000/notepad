@@ -33,6 +33,25 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Intent intent = getIntent();
+        String filename = intent.getStringExtra(FileListActivity.FILE_NAME);
+        String fileContents = intent.getStringExtra(FileListActivity.FILE_CONTENTS);
+
+        if(filename!=null) {
+            TextView titleField = (TextView) findViewById(R.id.titleText);
+            titleField.setText(filename);
+        }
+        if(fileContents!=null){
+            EditText pageContents = (EditText) findViewById(R.id.editText);
+            pageContents.setText(fileContents);
+        }
     }
 
     @Override
@@ -46,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
             case R.id.new_page:
-                System.out.println("new page");
+                newPage();
                 return true;
             case R.id.save_page:
                 TextView titleField = (TextView) findViewById(R.id.titleText);
@@ -56,11 +75,10 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
                 Bundle bundl = new Bundle();
                 bundl.putCharSequence("currentName",currentName);
                 fragment.setArguments(bundl);
-            case R.id.load_page:
-                System.out.println("load page");
                 return true;
             case R.id.view_pages:
-                System.out.println("view pages");
+                Intent intent = new Intent(this, FileListActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(menuItem);
@@ -75,6 +93,12 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         return false;
     }
 
+    public void newPage(){
+        TextView titleText = (TextView)findViewById(R.id.titleText);
+        titleText.setText(R.string.new_file_title);
+        EditText editText = (EditText)findViewById(R.id.editText);
+        editText.setText("");
+    }
     public boolean savePad(String fileName){
         try {
             Log.e("test tag","save page");

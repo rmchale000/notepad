@@ -7,9 +7,6 @@
         android:id="@+id/save_page"
         android:title="@string/save_page" />
     <item
-        android:id="@+id/load_page"
-        android:title="@string/load_page" />
-    <item
         android:id="@+id/view_pages"
         android:title="@string/view_pages" />
 </menu>
