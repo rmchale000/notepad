@@ -10,7 +10,11 @@
     <string name="dialog_filename">File Name</string>
     <string name="save">Save</string>
     <string name="back">Back</string>
+    <string name="file_saved">File Saved:</string>
     <string name="empty_file_folder">No txt files to display</string>
     <string name="load_button">Load</string>
     <string name="delete_button">Delete</string>
+    <string name="was_deleted">was deleted</string>
+    <string name="continue_button">Continue</string>
+    <string name="ok_button">OK</string>
 </resources>

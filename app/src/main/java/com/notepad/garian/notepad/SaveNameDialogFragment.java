@@ -56,6 +56,9 @@ public class SaveNameDialogFragment extends DialogFragment {
     public void onStart(){
         super.onStart();
         EditText titleField = (EditText) this.getDialog().findViewById(R.id.filenameField);
-        titleField.setText((CharSequence) getArguments().get("currentName"));
+        String currentName = (String)getArguments().get("currentName");
+        if(currentName.endsWith(".txt"))
+            currentName = currentName.substring(0,currentName.length()-4);
+        titleField.setText((CharSequence) currentName);
     }
 }

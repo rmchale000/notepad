@@ -1,5 +1,6 @@
 package com.notepad.garian.notepad;
 
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.content.Intent;
 import android.os.Environment;
@@ -36,11 +37,13 @@ public class FileListActivity extends AppCompatActivity implements DeleteDialogF
         filesRecyclerView.setLayoutManager(layoutManager);
 
         //TODO find out if request permissions is necessary here
-        File filesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/notepad/");
-        String[] filenames = filesDir.list();
-        if(filenames==null || filenames.length==0)
-            filenames = new String[]{getString(R.string.empty_file_folder)};
-        rvAdapter = new FileListAdapter(filenames);
+        File filesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/notepad/");
+        File[] files = filesDir.listFiles();
+        if (files == null || files.length == 0) {
+            DialogFragment fragment = new BlankListDialogFragment();
+            fragment.show(getSupportFragmentManager(), "Blank list");
+        }
+        rvAdapter = new FileListAdapter(files);
         filesRecyclerView.setAdapter(rvAdapter);
     }
 
@@ -84,6 +87,18 @@ public class FileListActivity extends AppCompatActivity implements DeleteDialogF
         try{
             File condemnedFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/notepad/" + getFileBeingDeleted());
             condemnedFile.delete();
+            dialogFragment.dismiss();
+            File filesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS)+"/notepad/");
+            File[] files = filesDir.listFiles();
+            if(files==null || files.length==0){
+                DialogFragment fragment = new BlankListDialogFragment();
+                fragment.show(getSupportFragmentManager(),"Blank list");
+            }
+            ((FileListAdapter)rvAdapter).setFileList(files);
+            rvAdapter.notifyDataSetChanged();
+            //recreate();
+            View contextViewtest = findViewById(R.id.filesRecyclerView);
+            Snackbar.make(contextViewtest, getFileBeingDeleted()+" "+getBaseContext().getString(R.string.was_deleted), Snackbar.LENGTH_SHORT).show();
         }catch(Exception e){e.printStackTrace();}
     }
     public void onDeleteNegativeClick(DialogFragment dialogFragment){

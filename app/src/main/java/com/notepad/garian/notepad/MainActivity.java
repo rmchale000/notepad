@@ -9,6 +9,8 @@ import android.os.Environment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.support.design.widget.Snackbar;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -23,18 +26,20 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-public class MainActivity extends AppCompatActivity implements SaveNameDialogFragment.SaveNameDialogListener{
+public class MainActivity extends AppCompatActivity implements SaveNameDialogFragment.SaveNameDialogListener, ContinueDialogFragment.ContinueDialogListener, TextWatcher {
 
     public static final String EXTRA_MESSAGE = "com.notepad.garian.notepad.MESSAGE";
     public static final int WRITE_EXTERNAL_STORAGE_CODE=7;
     private DialogFragment saveDialog;
+    private boolean isUnsavedText=false;
+    private boolean isNewPage=true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        EditText editText = (EditText) findViewById(R.id.editText);
+        editText.addTextChangedListener(this);
     }
 
     @Override
@@ -47,11 +52,13 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         if(filename!=null) {
             TextView titleField = (TextView) findViewById(R.id.titleText);
             titleField.setText(filename);
+            isNewPage=false;
         }
         if(fileContents!=null){
             EditText pageContents = (EditText) findViewById(R.id.editText);
             pageContents.setText(fileContents);
         }
+        isUnsavedText=false;
     }
 
     @Override
@@ -65,11 +72,16 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch(menuItem.getItemId()) {
             case R.id.new_page:
-                newPage();
+                if(isUnsavedText)
+                    new ContinueDialogFragment().show(getSupportFragmentManager(),"new page");
+                else
+                    newPage();
                 return true;
             case R.id.save_page:
                 TextView titleField = (TextView) findViewById(R.id.titleText);
-                CharSequence currentName = titleField.getText();
+                CharSequence currentName = "";
+                if(!isNewPage)
+                    currentName = titleField.getText();
                 DialogFragment fragment = new SaveNameDialogFragment();
                 fragment.show(getSupportFragmentManager(),"File Name");
                 Bundle bundl = new Bundle();
@@ -98,6 +110,8 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         titleText.setText(R.string.new_file_title);
         EditText editText = (EditText)findViewById(R.id.editText);
         editText.setText("");
+        isUnsavedText=false;
+        isNewPage=true;
     }
     public boolean savePad(String fileName){
         try {
@@ -120,6 +134,10 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
                 String contents = editText.getText().toString();
                 bw.write(contents);
                 bw.close();
+                isUnsavedText=false;
+                isNewPage=false;
+                View contextView = findViewById(R.id.editText);
+                Snackbar.make(contextView, getBaseContext().getString(R.string.file_saved)+" "+fileName, Snackbar.LENGTH_SHORT).show();
             } else {
                 Log.e("test tag","popup Storage not available");
             }
@@ -135,7 +153,7 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
             EditText filenameField = (EditText) dialogFragment.getDialog().findViewById(R.id.filenameField);
             String filename = filenameField.getText().toString();
             if(!filename.endsWith(".txt"))
-                filename += ".txt";
+                filename+=".txt";
             if (savePad(filename)) {
                 Log.e("log", filename + " saved");
                 TextView titleField = (TextView) findViewById(R.id.titleText);
@@ -151,7 +169,9 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
                     DialogFragment dialogFragment = getSaveDialog();
                     EditText filenameField = (EditText) dialogFragment.getDialog().findViewById(R.id.filenameField);
-                    String filename = filenameField.getText().toString() + ".txt";
+                    String filename = filenameField.getText().toString();
+                    if(!filename.endsWith(".txt"))
+                        filename+=".txt";
                     if (savePad(filename)) {
                         Log.e("log", filename + " saved");
                         TextView titleField = (TextView) findViewById(R.id.titleText);
@@ -162,9 +182,18 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         }
     }
 
-    public void onSaveNegativeClick(DialogFragment dialog){
+    public void onSaveNegativeClick(DialogFragment dialog){}
 
+    public void onContinuePositiveClick(DialogFragment dialog){
+        newPage();
     }
+    public void onContinueNegativeClick(DialogFragment dialog){}
+
+    public void onTextChanged(CharSequence c, int start, int before, int count){
+        isUnsavedText=true;
+    }
+    public void beforeTextChanged(CharSequence c, int start, int count, int after) { }
+    public void afterTextChanged(Editable c) { }
 
     public void setSaveDialog(DialogFragment fragment){
         saveDialog = fragment;
@@ -172,11 +201,13 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     public DialogFragment getSaveDialog(){
         return saveDialog;
     }
-    public void sendMessage(View view){
+    public void unsavedText(){isUnsavedText=true;}
+    public boolean getUnsavedText(){return isUnsavedText;}
+    /*public void sendMessage(View view){
         Intent intent = new Intent(this, DisplayMessageActivity.class);
         EditText editText = (EditText) findViewById(R.id.editTextOld);
         String message = editText.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, message);
         startActivity(intent);
-    }
+    }*/
 }
