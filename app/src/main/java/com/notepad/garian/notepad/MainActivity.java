@@ -40,6 +40,9 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         setContentView(R.layout.activity_main);
         EditText editText = (EditText) findViewById(R.id.editText);
         editText.addTextChangedListener(this);
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},WRITE_EXTERNAL_STORAGE_CODE);
+        }
     }
 
     @Override
@@ -115,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     }
     public boolean savePad(String fileName){
         try {
-            Log.e("test tag","save page");
             if (isExternalStorageWritable()) {
 
                 //File filesDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/notepad");
@@ -127,7 +129,6 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
                 //File filesDir = new File(getFilesDir()+"/notepad");
                 filesDir.mkdirs();
                 File newFile = new File(filesDir, fileName);
-                Log.e("test tag", "newFile is " + newFile);
                 newFile.createNewFile();
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(newFile)));
                 EditText editText = (EditText) findViewById(R.id.editText);
@@ -164,22 +165,13 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
 
     @Override
     public void onRequestPermissionsResult(int requestCode,String[] permissions, int[] grantResults){
-        switch(requestCode){
+        /*switch(requestCode){
             case WRITE_EXTERNAL_STORAGE_CODE:
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    DialogFragment dialogFragment = getSaveDialog();
-                    EditText filenameField = (EditText) dialogFragment.getDialog().findViewById(R.id.filenameField);
-                    String filename = filenameField.getText().toString();
-                    if(!filename.endsWith(".txt"))
-                        filename+=".txt";
-                    if (savePad(filename)) {
-                        Log.e("log", filename + " saved");
-                        TextView titleField = (TextView) findViewById(R.id.titleText);
-                        titleField.setText(filename);
-                    }
+                    
                 }
                 return;
-        }
+        }*/
     }
 
     public void onSaveNegativeClick(DialogFragment dialog){}

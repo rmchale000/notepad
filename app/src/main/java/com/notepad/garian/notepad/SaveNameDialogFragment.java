@@ -29,7 +29,6 @@ public class SaveNameDialogFragment extends DialogFragment {
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        Log.e("setting positive button",SaveNameDialogFragment.this.toString());
                         listener.onSavePositiveClick(SaveNameDialogFragment.this);
                     }
                 })

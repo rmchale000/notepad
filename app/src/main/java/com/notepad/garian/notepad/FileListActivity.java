@@ -51,9 +51,6 @@ public class FileListActivity extends AppCompatActivity implements DeleteDialogF
         try {
             TextView titleView = (TextView) ((View) view.getParent()).findViewById(R.id.filenameLI);
             String filename = titleView.getText().toString();
-            Log.e("view toString", view.toString());
-            Log.e("view parent toString", view.getParent().toString());
-            Log.e("list activity", "loadPage called " + filename);
 
             File readFile = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS) + "/notepad/" + filename);
             BufferedReader br = new BufferedReader(new FileReader(readFile));
@@ -74,7 +71,6 @@ public class FileListActivity extends AppCompatActivity implements DeleteDialogF
     public void deletePage(View view){
         TextView titleView = (TextView) ((View) view.getParent()).findViewById(R.id.filenameLI);
         String filename = titleView.getText().toString();
-        Log.e("list activity","deletePage called "+filename);
         setFileBeingDeleted(filename);
         DialogFragment fragment = new DeleteDialogFragment();
         fragment.show(getSupportFragmentManager(),"File Name");
