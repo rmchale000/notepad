@@ -43,11 +43,6 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},WRITE_EXTERNAL_STORAGE_CODE);
         }
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
         Intent intent = getIntent();
         String filename = intent.getStringExtra(FileListActivity.FILE_NAME);
         String fileContents = intent.getStringExtra(FileListActivity.FILE_CONTENTS);
@@ -67,7 +62,22 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
     @Override
     public boolean onCreateOptionsMenu(Menu menu){
         MenuInflater inflater = getMenuInflater();
+
         inflater.inflate(R.menu.notepad_menu, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            menu.findItem(R.id.save_page).setVisible(false);
+            menu.findItem(R.id.view_pages).setVisible(false);
+        }
+        else{
+            menu.findItem(R.id.save_page).setVisible(true);
+            menu.findItem(R.id.view_pages).setVisible(true);
+        }
         return true;
     }
 
@@ -168,7 +178,7 @@ public class MainActivity extends AppCompatActivity implements SaveNameDialogFra
         /*switch(requestCode){
             case WRITE_EXTERNAL_STORAGE_CODE:
                 if(grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED){
-                    
+
                 }
                 return;
         }*/
